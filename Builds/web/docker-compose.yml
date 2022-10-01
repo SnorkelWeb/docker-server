@@ -1,9 +1,11 @@
 version: "3.7"
 volumes:
-  data:
+  hosting:
     external: true
 networks:
   web:
+    external: true
+  backend:
     external: true
 services:
   web:
@@ -20,9 +22,10 @@ services:
     container_name: ${site_name}_web
     networks:
       - web
+      - backend
     volumes:
-      - data:/var/www/
-      - ./Build/nginx/confs/default.conf:/etc/nginx/conf.d/default.conf
+      - hosting:/var/www/
+      - ./configs/nginx/default.conf:/etc/nginx/conf.d/default.conf
     restart: always
   php:
     build:
@@ -31,7 +34,8 @@ services:
       - localdir=/var/www/public
     networks:
       - web
+      - backend
     container_name: ${site_name}_php
     volumes:
-      - data:/var/www
+      - hosting:/var/www
     restart: always
